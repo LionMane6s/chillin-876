@@ -1,14 +1,17 @@
-import React from 'react';
-import { Moon, Sun, LogIn } from 'lucide-react';
+import React, { useState } from 'react';
+import { Moon, Sun, LogIn, X, Menu as MenuIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Logo } from './Logo';
+import { useDarkModeContext } from '../contexts/DarkModeContext';
 
-interface NavbarProps {
-  isDarkMode: boolean;
-  setIsDarkMode: (value: boolean) => void;
-}
+export function Navbar() {
+  const { isDarkMode, setIsDarkMode } = useDarkModeContext();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-export function Navbar({ isDarkMode, setIsDarkMode }: NavbarProps) {
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <nav className="fixed top-0 left-4 right-4 z-50 transition-all duration-500 mt-14">
       <div className={`max-w-6xl mx-auto ${
@@ -61,13 +64,55 @@ export function Navbar({ isDarkMode, setIsDarkMode }: NavbarProps) {
                 <Moon size={20} className="text-yellow-600" />
               )}
             </button>
-            <button className="p-2">
-              <div className="w-6 h-0.5 bg-yellow-600 dark:bg-yellow-400 mb-1.5"></div>
-              <div className="w-6 h-0.5 bg-yellow-600 dark:bg-yellow-400 mb-1.5"></div>
-              <div className="w-6 h-0.5 bg-yellow-600 dark:bg-yellow-400"></div>
+            <button 
+              onClick={toggleMobileMenu}
+              className="p-2 rounded-full hover:bg-yellow-400/10 transition-colors"
+              aria-label="Toggle mobile menu"
+            >
+              {isMobileMenuOpen ? (
+                <X size={24} className="text-yellow-600 dark:text-yellow-400" />
+              ) : (
+                <MenuIcon size={24} className="text-yellow-600 dark:text-yellow-400" />
+              )}
             </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden px-6 py-4 border-t border-gray-200 dark:border-gray-800">
+            <div className="flex flex-col space-y-4">
+              <Link 
+                to="/menu" 
+                className="text-yellow-600 dark:text-yellow-400/90 hover:text-yellow-700 dark:hover:text-yellow-400 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Menu
+              </Link>
+              <Link 
+                to="/about" 
+                className="text-yellow-600 dark:text-yellow-400/90 hover:text-yellow-700 dark:hover:text-yellow-400 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link 
+                to="/contact" 
+                className="text-yellow-600 dark:text-yellow-400/90 hover:text-yellow-700 dark:hover:text-yellow-400 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Contact
+              </Link>
+              <Link 
+                to="/reservations" 
+                className="px-4 py-2 bg-purple-600 text-white font-semibold rounded-full hover:bg-purple-700 transition-colors text-center"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Reserve My Table
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );

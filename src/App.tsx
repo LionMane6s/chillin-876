@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { MenuPage } from './pages/MenuPage';
 import { MainCoursesPage } from './pages/menu/MainCoursesPage';
@@ -22,15 +22,16 @@ import { Footer } from './components/Footer';
 import { Navbar } from './components/Navbar';
 import { AppBanner } from './components/AppBanner';
 import { ScrollToTop } from './components/ScrollToTop';
+import { DarkModeProvider, useDarkModeContext } from './contexts/DarkModeContext';
 
 function HomePage() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { isDarkMode } = useDarkModeContext();
 
   return (
     <div className={`${isDarkMode ? 'dark' : ''}`}>
       <div className="bg-white dark:bg-gray-900 transition-colors duration-200">
         <AnnouncementBar />
-        <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+        <Navbar />
         <main>
           <section className="pt-24">
             <Hero />
@@ -50,9 +51,11 @@ function HomePage() {
   );
 }
 
-function App() {
+function AppContent() {
+  const { isDarkMode } = useDarkModeContext();
+
   return (
-    <Router>
+    <div className={isDarkMode ? 'dark' : ''}>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/menu" element={<MenuPage />} />
@@ -70,6 +73,16 @@ function App() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/reservations" element={<ReservationsPage />} />
       </Routes>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <DarkModeProvider>
+        <AppContent />
+      </DarkModeProvider>
     </Router>
   );
 }
